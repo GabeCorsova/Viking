@@ -3,7 +3,7 @@
 ##############################################################################
 # Script to fetch the latest of words flow from there website then download and install on the local computer
 # Script by Gabriel Marcelino
-# ‪Senior Apple Technician of Corserva
+# Senior Apple Technician of Corserva
 # 10/02/2023
 ##############################################################################
 
