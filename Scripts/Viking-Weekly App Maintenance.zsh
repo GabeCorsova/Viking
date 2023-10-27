@@ -1,7 +1,7 @@
 #!/bin/zsh
 <<'ABOUT_THIS_SCRIPT'
 -----------------------------------------------------------------------
-Weekly App Maintenance...
+App Maintenance script By Gabriel Marcelino from Corserva...
 
 Working with This to make a script using Installomator and Jamf with the following:
 
@@ -12,6 +12,8 @@ On Installomator:
 - Adobe Creative Cloud DC
 - Amazon Chime
 - Amazon Workspace
+- Azure Data Studio
+- Brave Browser
 - Citrix Workspace
 - Displaylink
 - Google Chrome
@@ -19,12 +21,15 @@ On Installomator:
 - Microsoft Outlook
 - Microsoft OneNote
 - Microsoft Teams
+- Microsoft Edge
 - Mozilla Firefox
 - RingCentral Softphone
 - Slack
 - Sublimetext
 - Talkdesk Callbar
 - Talkdesk CXcloud
+- TeamViewer FUll
+- TeamViewer QS
 - TextExpander
 - VLC
 - Viscosity
@@ -63,7 +68,7 @@ userID=$( id -u $loggedInUser )
 Deferal_Policy="WeeklyUpdateDeferal"
 PLISTNAME="com.Viking.weeklyupdatedeferal.plist"
 Deferal_PLIST="/Library/LaunchAgents/$PLISTNAME"
-Deferals_Count_PLIST="/usr/local/viking/WeeklyUpdates/com.viking.weeklyupdatedeferalcount.plist"
+Deferals_Count_PLIST="$WorkingDir/com.viking.weeklyupdatedeferalcount.plist"
 icon_most_path="/Contents/Resources"
 # for future to fix the listing
 appsdisplay=()
@@ -292,6 +297,35 @@ Install_App_List() {
     	else
         echo "--No $name--"
     fi
+
+    ##### Azure Data Studio #####
+    name="Azure Data Studio"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        downloadURL=$( curl -sL https://github.com/microsoft/azuredatastudio/releases/latest | grep 'Universal' | grep -Eo "(http|https)://[a-zA-Z0-9./?=_%:-]*" | head -1 )
+        appNewVersion=$(versionFromGit microsoft azuredatastudio )
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("microsoftazuredatastudio")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
     ##### Citrix Workspace #####
     name="Citrix Workspace"
     applist="/Applications/$name.app"
@@ -302,7 +336,7 @@ Install_App_List() {
         versionKey="CitrixVersionString"
         echo "--$name Exists--"
         echo "Checking latest Version"
-      parseURL() {
+        parseURL() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external'
         htmlDocument=$(curl -s -L $urlToParse)
         xmllint --html --xpath "string(//a[contains(@rel, 'downloads.citrix.com')]/@rel)" 2> /dev/null <(print $htmlDocument)
@@ -392,6 +426,42 @@ Install_App_List() {
         	    fi
     	else
         echo "--No Amazon $name--"
+    fi
+     ##### Brave Browser #####
+    name="Brave Browser"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        versionKey="CFBundleVersion"
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        if [[ $(arch) != "i386" ]]; then
+        printlog "Architecture: arm64 (not i386)"
+        downloadURL=$(curl -fsIL https://laptop-updates.brave.com/latest/osxarm64/release | grep -i "^location" | sed -E 's/.*(https.*\.dmg).*/\1/g')
+        appNewVersion="$(curl -fsL "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable-arm64/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null  | cut -d '"' -f 2)"
+    else
+        printlog "Architecture: i386"
+        downloadURL=$(curl -fsIL https://laptop-updates.brave.com/latest/osx/release | grep -i "^location" | sed -E 's/.*(https.*\.dmg).*/\1/g')
+        appNewVersion="$(curl -fsL "https://updates.bravesoftware.com/sparkle/Brave-Browser/stable/appcast.xml" | xpath '//rss/channel/item[last()]/enclosure/@sparkle:version' 2>/dev/null  | cut -d '"' -f 2)"
+    fi
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("brave")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+                versionKey="CFBundleShortVersionString"
+    	else
+        echo "--No $name--"
     fi
 
     ##### Google Chrome #####
@@ -501,6 +571,34 @@ Install_App_List() {
         				install_apps+=("microsoftautoupdate")
                         app_icon+=("$applist/$icon_most_path/AppIcon.icns")
         				fi
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
+    ##### Microsoft Edge #####
+    name="Microsoft Edge"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        downloadURL="https://go.microsoft.com/fwlink/?linkid=2093504"
+        appNewVersion=$(curl -fsIL "$downloadURL" | grep -i location: | grep -o "/MicrosoftEdge.*pkg" | sed -E 's/.*\/[a-zA-Z]*-([0-9.]*)\..*/\1/g')
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("microsoftedge")
+                    app_icon+=("$applist")
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -944,7 +1042,61 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
-     ##### talkdeskcxcloud #####
+    ##### TeamViewer #####
+    name="TeamViewer"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("teamviewer")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
+    ##### TeamViewerQS #####
+    name="TeamViewerQS"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -fs "https://www.teamviewer.com/en/download/macos/" | grep "Current version" | awk -F': ' '{ print $2 }' | sed 's/<[^>]*>//g')
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("teamviewerqs")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+    
+    ##### talkdeskcxcloud #####
     name="Talkdesk"
     applist="/Applications/$name.app"
     echo "
@@ -1180,12 +1332,12 @@ Checking_Tools() {
             "
     $InstallomatorApp installomator NOTIFY=silent
     ## Checking for Python
-    echo "
-            *************************************
-            Checking updates for Python
-            *************************************
-            "
-    $InstallomatorApp macadminspython NOTIFY=silent
+    # echo "
+    #         *************************************
+    #         Checking updates for Python
+    #         *************************************
+    #         "
+    # $InstallomatorApp macadminspython NOTIFY=silent
 
     ## Checking for update of Swift Dialog
     echo "
@@ -1385,9 +1537,14 @@ if [ $Choice = "0" ]; then
             dialog_command "progresstext: Updating "$appMessage"..."
             dialog_command "listitem: "$appMessage": progress, statustext: "Updating..."
             sleep 0.1
+            ## Customize Installomator or other ways to install instead
             if [[ "$Installomator" == "microsoftteams" ]]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftoutlook" ]]; then
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "microsoftedge" ]]; then
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "microsoftonenote" ]]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             else
                 $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
