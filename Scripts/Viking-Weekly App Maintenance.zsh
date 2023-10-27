@@ -102,6 +102,7 @@ getJSONValue() {
 		-e 'if (typeof value === "object") { JSON.stringify(value, null, 4) } else { value }'
 }
 
+# Handling of differences in xpath between Catalina and Big Sur
 xpath() {
 	# the xpath tool changes in Big Sur and now requires the `-e` option
 	if [[ $(sw_vers -buildVersion) > "20A" ]]; then
@@ -112,6 +113,7 @@ xpath() {
 		/usr/bin/xpath $@
 	fi
 }
+
 
 versionFromGit() {
     # credit: Søren Theilgaard (@theilgaard)
@@ -937,11 +939,11 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-        appNewVersion=$(curl -fs https://royaltsx-v6.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/description/@sparkle:shortVersionString'  2>/dev/null | cut -d '"' -f 2)
+        appNewVersion=$(curl -fs https://royaltsx-v6.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/enclosure/@sparkle:shortVersionString'  2>/dev/null | cut -d '"' -f 2)
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
-                echo "Mac has $name version $appversion "
+                echo "Mac has $name version $appversion"
                 if [[ $appversion != $appNewVersion ]]; then   
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
