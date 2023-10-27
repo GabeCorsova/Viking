@@ -23,7 +23,9 @@ On Installomator:
 - Microsoft Teams
 - Microsoft Edge
 - Mozilla Firefox
+- Postman
 - RingCentral Softphone
+- Royal TSX
 - Slack
 - Sublimetext
 - Talkdesk Callbar
@@ -35,6 +37,7 @@ On Installomator:
 - Viscosity
 - Vmware Horizon Client
 - Wireshark
+- Wacom Drivers
 - zoom.us
 
 On Installomator but not on this script yet:
@@ -864,6 +867,39 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
+    ##### Postman #####
+    name="Postman"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+            if [[ $(arch) == "arm64" ]]; then
+                downloadURL="https://dl.pstmn.io/download/latest/osx_arm64"
+                appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+                elif [[ $(arch) == "i386" ]]; then
+                    downloadURL="https://dl.pstmn.io/download/latest/osx_64"
+                    appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+            fi
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("postman")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
     ##### RingCentral Softphone #####
     name="RingCentral for Mac"
     applist="/Applications/$name.app"
@@ -892,6 +928,33 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
+    ##### Royal TSX #####
+    name="Royal TSX"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -fs https://royaltsx-v6.royalapps.com/updates_stable | xpath '//rss/channel/item[1]/description/@sparkle:shortVersionString'  2>/dev/null | cut -d '"' -f 2)
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("royaltsx")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
     ##### Slack #####
     name="Slack"
     applist="/Applications/$name.app"
@@ -913,6 +976,33 @@ Install_App_List() {
         			## Installomator variable ##
         			install_apps+=("slack")
                     app_icon+=("$applist/$icon_most_path/electron.icns")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
+    ##### Wacom Desktop Center #####
+    name="Wacom Desktop Center"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+    	appNewVersion="$(curl -fs https://www.wacom.com/en-us/support/product-support/drivers | grep mac/professional/releasenotes | head -1 | tr '"' "\n" | grep -e "Driver [0-9][-0-9.]*" | sed -E 's/Driver ([-0-9.]*).*/\1/g')"
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("wacomdrivers")
+                    app_icon+=("$applist")
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
