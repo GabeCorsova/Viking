@@ -984,8 +984,8 @@ Install_App_List() {
     fi
 
     ##### Wacom Desktop Center #####
-    name="Wacom Desktop Center"
-    applist="/Applications/$name.app"
+    name="Wacom Center"
+    applist="/Applications/Wacom Tablet/$name.app"
     echo "
         *** Checking for $name ***
         App File Path: $applist"
