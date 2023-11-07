@@ -24,6 +24,7 @@ On Installomator:
 - Microsoft Edge
 - Mozilla Firefox
 - Postman
+- Rectangle
 - RingCentral Softphone
 - Royal TSX
 - Slack
@@ -869,8 +870,41 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
-    ##### Postman #####
-    name="Postman"
+    # ##### Postman #####
+    # name="Postman"
+    # applist="/Applications/$name.app"
+    # echo "
+    #     *** Checking for $name ***
+    #     App File Path: $applist"
+    # if [ -d "$applist" ]; then
+    #     echo "--$name Exists--"
+    #     echo "Checking latest Version"
+    #         if [[ $(arch) == "arm64" ]]; then
+    #             downloadURL="https://dl.pstmn.io/download/latest/osx_arm64"
+    #             appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+    #             elif [[ $(arch) == "i386" ]]; then
+    #                 downloadURL="https://dl.pstmn.io/download/latest/osx_64"
+    #                 appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+    #         fi
+    #     echo "$name Latest Version: $appNewVersion"
+    #         ## Getting Current Version ##
+    #             getAppVersion
+    #             echo "Mac has $name version $appversion "
+    #             if [[ $appversion != $appNewVersion ]]; then   
+    #         	    echo "$name Needs to be updated"   
+    #     			appsdisplay+=("$name")
+    #     			## Installomator variable ##
+    #     			install_apps+=("postman")
+    #                 app_icon+=("$applist")
+    #     	    else
+    #     	        echo "$name is on the latest version $appNewVersion"
+    #     	    fi
+    # 	else
+    #     echo "--No $name--"
+    # fi
+    
+    ##### Rectangle #####
+    name="Rectangle"
     applist="/Applications/$name.app"
     echo "
         *** Checking for $name ***
@@ -878,22 +912,43 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-            if [[ $(arch) == "arm64" ]]; then
-                downloadURL="https://dl.pstmn.io/download/latest/osx_arm64"
-                appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-                elif [[ $(arch) == "i386" ]]; then
-                    downloadURL="https://dl.pstmn.io/download/latest/osx_64"
-                    appNewVersion=$(curl -fsL --head "${downloadURL}" | grep "content-disposition:" | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
-            fi
+        appNewVersion=$(versionFromGit rxhanson Rectangle)
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
-                echo "Mac has $name version $appversion "
+                echo "Mac has $name version $appversion"
                 if [[ $appversion != $appNewVersion ]]; then   
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
-        			install_apps+=("postman")
+        			install_apps+=("rectangle")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
+    ##### BetterZip #####
+    name="BetterZip"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -s "https://macitbetter.com/downloads/" | grep -o 'Current version [0-9]*\.[0-9]*\.[0-9]*' | awk '{print $3}')
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion"
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("BetterZip")
                     app_icon+=("$applist")
         	    else
         	        echo "$name is on the latest version $appNewVersion"
@@ -1638,6 +1693,8 @@ if [ $Choice = "0" ]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftonenote" ]]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "BetterZip" ]]; then
+                    "$JAMF_BINARY" policy -event BetterZipUpdates
             else
                 $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             fi
