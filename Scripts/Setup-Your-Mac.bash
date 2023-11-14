@@ -566,13 +566,13 @@ if [[ -n "${supportTeamName}" ]]; then
         welcomeMessage+="- **Email**: ${supportTeamEmail}\n"
     fi
 
-    if [[ -n "${supportTeamWebsite}" ]]; then
-        welcomeMessage+="- **Web**: ${supportTeamHyperlink}\n"
-    fi
+    # if [[ -n "${supportTeamWebsite}" ]]; then
+    #     welcomeMessage+="- **Web**: ${supportTeamHyperlink}\n"
+    # fi
 
-    if [[ -n "${supportKB}" ]]; then
-        welcomeMessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}\n"
-    fi
+    # if [[ -n "${supportKB}" ]]; then
+    #     welcomeMessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}\n"
+    # fi
 
 fi
 
@@ -800,13 +800,13 @@ if [ -n "$supportTeamEmail" ]; then
   helpmessage+="- **Email:** ${supportTeamEmail}  \n"
 fi
 
-if [ -n "$supportTeamWebsite" ]; then
-    helpmessage+="- **Web**: ${supportTeamHyperlink}  \n"
-fi
+# if [ -n "$supportTeamWebsite" ]; then
+#     helpmessage+="- **Web**: ${supportTeamHyperlink}  \n"
+# fi
 
-if [ -n "$supportKB" ]; then
-  helpmessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}  \n"
-fi
+# if [ -n "$supportKB" ]; then
+#   helpmessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}  \n"
+# fi
 
 helpmessage+="\n**Computer Information:**  \n"
 helpmessage+="- **Operating System:** ${macOSproductVersion} (${macOSbuildVersion})  \n"
@@ -1334,13 +1334,13 @@ function finalise(){
                     supportContactMessage+="- **Email:** $supportTeamEmail\n"
                 fi
 
-                if [[ -n "${supportTeamWebsite}" ]]; then
-                    supportContactMessage+="- **Web**: ${supportTeamHyperlink}\n"
-                fi
+                # if [[ -n "${supportTeamWebsite}" ]]; then
+                #     supportContactMessage+="- **Web**: ${supportTeamHyperlink}\n"
+                # fi
 
-                if [[ -n "${supportKB}" ]]; then
-                    supportContactMessage+="- **Knowledge Base Article:** $supportTeamErrorKB\n"
-                fi
+                # if [[ -n "${supportKB}" ]]; then
+                #     supportContactMessage+="- **Knowledge Base Article:** $supportTeamErrorKB\n"
+                # fi
             
             fi
 
@@ -2874,13 +2874,13 @@ if [[ "${symConfiguration}" != *"Catch-all"* ]]; then
                 helpmessage+="- **Email:** ${supportTeamEmail}  \n"
             fi
 
-            if [[ -n "${supportTeamWebsite}" ]]; then
-                helpmessage+="- **Web**: ${supportTeamHyperlink}  \n"
-            fi
+            # if [[ -n "${supportTeamWebsite}" ]]; then
+            #     helpmessage+="- **Web**: ${supportTeamHyperlink}  \n"
+            # fi
         
-            if [[ -n "${supportKB}" ]]; then
-                helpmessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}  \n"
-            fi
+            # if [[ -n "${supportKB}" ]]; then
+            #     helpmessage+="- **Knowledge Base Article:** ${supportTeamErrorKB}  \n"
+            # fi
 
         fi
 
