@@ -39,7 +39,7 @@
 scriptVersion="1.13.0"
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 scriptLog="${4:-"/var/log/com.Viking.log"}"                                     # Parameter 4: Script Log Location [ /var/log/org.churchofjesuschrist.log ] (i.e., Your organization's default location for client-side logs)
-debugMode="${5:-"verbose"}"                                                     # Parameter 5: Debug Mode [ verbose (default) | true | false ]
+debugMode="${5:-"false"}"                                                     # Parameter 5: Debug Mode [ verbose (default) | true | false ]
 welcomeDialog="${6:-"false"}"                                               # Parameter 6: Welcome dialog [ userInput (default) | video | messageOnly | false ]
 completionActionOption="${7:-"wait"}"                               # Parameter 7: Completion Action [ wait | sleep (with seconds) | Shut Down | Shut Down Attended | Shut Down Confirm | Restart | Restart Attended (default) | Restart Confirm | Log Out | Log Out Attended | Log Out Confirm ]
 requiredMinimumBuild="${8:-"disabled"}"                                         # Parameter 8: Required Minimum Build [ disabled (default) | 22E ] (i.e., Your organization's required minimum build of macOS to allow users to proceed; use "22E" for macOS 13.3)
@@ -980,6 +980,10 @@ function policyJSONConfiguration() {
                                          {
                                             "trigger": "NudgeApplication",
                                             "validation": "None"
+                                        },
+                                        {
+                                            "trigger": "Printeradmingroup",
+                                            "validation": "None"
                                          }
                         ]
                     },
@@ -1001,7 +1005,7 @@ function policyJSONConfiguration() {
                         "trigger_list": [
                                          {
                                             "trigger": "MSOfficeSuite",
-                                            "validation": "/Applications/Microsoft Word.app"
+                                            "validation": "None"
                                          }
                         ]
                     },
@@ -1012,7 +1016,7 @@ function policyJSONConfiguration() {
                         "trigger_list": [
                                          {
                                             "trigger": "MSTeamsApplication",
-                                            "validation": "/Applications/Microsoft Teams (work or school).app"
+                                            "validation": "None"
                                          }
                         ]
                     },
@@ -1023,17 +1027,6 @@ function policyJSONConfiguration() {
                         "trigger_list": [
                                          {
                                             "trigger": "MSEdgeApplication",
-                                            "validation": "None"
-                                         }
-                        ]
-                    },
-                    {
-                        "listitem": "Add to Printer Admin Group",
-                        "icon": "https://usw2.ics.services.jamfcloud.com/icon/hash_ff4bbae42ffce5c9e2ee475406803e9503cde2cb2d6148dcd5203f5e3ece8a59",
-                        "progresstext": "Processing policy: Adding Printer Settings",
-                        "trigger_list": [
-                                         {
-                                            "trigger": "Printeradmingroup",
                                             "validation": "None"
                                          }
                         ]
