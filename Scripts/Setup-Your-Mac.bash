@@ -959,7 +959,7 @@ function policyJSONConfiguration() {
                     {
                         "listitem": "Securing Your Mac",
                         "icon": "https://ics.services.jamfcloud.com/icon/hash_ff2147a6c09f5ef73d1c4406d00346811a9c64c0b6b7f36eb52fcb44943d26f9",
-                        "progresstext": "Installing Vikings Securty Programs and Settings",
+                        "progresstext": "Installing Vikings  security programs and settings",
                         "trigger_list": [
                                          {
                                             "trigger": "MacAdminAccount",
@@ -1044,22 +1044,11 @@ function policyJSONConfiguration() {
                     },
                     {
                         "listitem": "Dock Configuration",
-                        "icon": "https://use1.ics.services.jamfcloud.com/icon/hash_5423686f9f3e38c47d57e3d3f49bb42f5144102585d1e6b031642118dac44d76",
+                        "icon": "https://usw2.ics.services.jamfcloud.com/icon/hash_b8adae0a5a5b906ef3a0c8624ca092b64d5133b8d66b5c45f69afea722f8c500",
                         "progresstext": "Processing policy: Cleaning The Dock",
                         "trigger_list": [
                                          {
                                             "trigger": "DockCleanup",
-                                            "validation": "None"
-                                         }
-                        ]
-                    },
-                    {
-                        "listitem": "Policy Refresh",
-                        "icon": "https://usw2.ics.services.jamfcloud.com/icon/hash_94b19685fd087200695bb75ac48cab0bd06b582abca3b95869278b1ff9057c04",
-                        "progresstext": "Checking for Any Other Application...",
-                        "trigger_list": [
-                                         {
-                                            "trigger": "27",
                                             "validation": "None"
                                          }
                         ]
