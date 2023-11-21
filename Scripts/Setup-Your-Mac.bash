@@ -959,7 +959,7 @@ function policyJSONConfiguration() {
                     {
                         "listitem": "Securing Your Mac",
                         "icon": "https://ics.services.jamfcloud.com/icon/hash_ff2147a6c09f5ef73d1c4406d00346811a9c64c0b6b7f36eb52fcb44943d26f9",
-                        "progresstext": "Installing Vikings  security programs and settings",
+                        "progresstext": "Installing security programs and settings",
                         "trigger_list": [
                                          {
                                             "trigger": "MacAdminAccount",
