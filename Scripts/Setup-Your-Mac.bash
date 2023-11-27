@@ -999,6 +999,17 @@ function policyJSONConfiguration() {
                         ]
                     },
                     {
+                        "listitem": "TeamViewer",
+                        "icon": "https://usw2.ics.services.jamfcloud.com/icon/hash_bd3f8538113b954d9e2e719d59c1b97ff03a5d9d22db759459bd1cbe38303f4c",
+                        "progresstext": "Processing policy: Installing TeamViewer",
+                        "trigger_list": [
+                                         {
+                                            "trigger": "TeamViewerQSApplication",
+                                            "validation": "None"
+                                         }
+                        ]
+                    },
+                    {
                         "listitem": "Office 365",
                         "icon": "https://usw2.ics.services.jamfcloud.com/icon/hash_1af97edbd000e18e30cf4a038b338b29249748c34107c04548e3b134bcec1b18",
                         "progresstext": "Processing policy: Installing Office 365",
