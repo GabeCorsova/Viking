@@ -267,7 +267,7 @@ Install_App_List() {
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
-        			install_apps+=("adobereaderdc-update")
+        			install_apps+=("adobereaderdc")
                     app_icon+=("$applist/$icon_most_path/ACR_App.icns")
         	    else
         	        echo "$name is on the latest version $appNewVersion"
@@ -479,7 +479,7 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-        appNewVersion=$(curl -s https://omahaproxy.appspot.com/history | awk -F',' '/mac_arm64,stable/{print $3; exit}')
+        appNewVersion=$(curl -fs "https://chromiumdash.appspot.com/fetch_releases?channel=stable&platform=mac&num=1&offset=0" | grep -o '"version":"[0-9.]*"' | head -1 | sed -E 's/"version":"([0-9.]+)"/\1/')
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
@@ -1695,6 +1695,8 @@ if [ $Choice = "0" ]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "BetterZip" ]]; then
                     "$JAMF_BINARY" policy -event BetterZipUpdates
+            elif [[ "$Installomator" == "1password8" ]]; then
+                    $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=kill LOGO="$LOGO"
             else
                 $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             fi
