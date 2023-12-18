@@ -35,9 +35,8 @@ $InstallomatorApp dialog NOTIFY=silent
 "${dialogBinary}" \
         --blurscreen \
         --quitkey p \
-        --title "Warning! Your macOS is NOT in Compliant" \
-        --titlefont "colour=#FF3012" \
-        --message "**Warning!**\n\n The macOS version needs to upgrade to macOS Sonoma to be in compliant with security standards.\n\n Please click '"'Continue'"' to open **Self Service** and run the **Upgrade to Sonoma** procedure" \
+        --title "Your macOS is Not in Compliant" \
+        --message "The macOS version needs to upgrade to macOS Sonoma to be in compliant with security standards.\n\n Please click '"'Continue'"' to open **Self Service** and run the **Upgrade to Sonoma** procedure" \
         --icon "$LOGO" \
         --timer 1800 \
         --button1text "Continue"
