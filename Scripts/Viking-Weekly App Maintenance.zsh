@@ -14,6 +14,7 @@ On Installomator:
 - Amazon Workspace
 - Azure Data Studio
 - Brave Browser
+- FileZilla
 - Citrix Workspace
 - Displaylink
 - Google Chrome
@@ -870,6 +871,33 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
+    ##### FileZilla #####
+    name="FileZilla"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--FileZilla Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macosx | head -n 1 | awk -F '_' '{print $2}' )
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("filezilla")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+    
     # ##### Postman #####
     # name="Postman"
     # applist="/Applications/$name.app"
