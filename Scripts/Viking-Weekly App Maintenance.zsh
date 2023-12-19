@@ -1721,6 +1721,12 @@ if [ $Choice = "0" ]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftonenote" ]]; then
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "microsoftword" ]]; then
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "microsoftpowerpoint" ]]; then
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
+            elif [[ "$Installomator" == "microsoftexcel" ]]; then
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"                
             elif [[ "$Installomator" == "BetterZip" ]]; then
                     "$JAMF_BINARY" policy -event BetterZipUpdates
             elif [[ "$Installomator" == "1password8" ]]; then
