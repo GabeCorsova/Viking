@@ -885,12 +885,16 @@ Install_App_List() {
             ## Getting Current Version ##
                 getAppVersion
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                    if [[ "$appversion" > "$appNewVersion" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("filezilla")
                     app_icon+=("$applist")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
