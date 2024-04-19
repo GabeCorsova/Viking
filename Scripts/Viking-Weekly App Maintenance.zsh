@@ -880,7 +880,7 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--FileZilla Exists--"
         echo "Checking latest Version"
-        appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macosx | head -n 1 | awk -F '_' '{print $2}' )
+        appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos | head -n 1 | awk -F '_' '{print $2}' )
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
@@ -1309,7 +1309,7 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-        appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xmllint --xpath '//item/title/text()' - | awk '{print $2}')
+        appNewVersion=$(curl -fs "https://www.wireshark.org/update/0/Wireshark/4.0.0/macOS/x86-64/en-US/stable.xml" | xmllint --xpath '//item/title/text()' - | awk 'NR==1{print $2}')
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
