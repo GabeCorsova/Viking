@@ -19,6 +19,7 @@ On Installomator:
 - CyberDuck
 - Displaylink
 - Google Chrome
+- iTerm2
 - Microsoft Office 2019/365 applications: Excel, Powerpoint, Word
 - Microsoft Outlook
 - Microsoft OneNote
@@ -26,7 +27,7 @@ On Installomator:
 - Microsoft Edge
 - Mozilla Firefox
 - Postman
-- poly Lens
+- Poly Lens
 - Rectangle
 - RingCentral Softphone
 - Royal TSX
@@ -411,6 +412,34 @@ Install_App_List() {
         echo "--No $name--"
     fi
 
+    ##### CyberDuck #####
+    name="Cyberduck"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -fs https://version.cyberduck.io/changelog.rss | xpath '//rss/channel/item/enclosure/@sparkle:shortVersionString' 2>/dev/null | cut -d '"' -f 2 )
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then   
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("cyberduck")
+                    app_icon+=("$applist")
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi
+
+
     ##### Display Link Manager #####
     ## Display link in Installomator is broken using Jamf Apps
     # name="DisplayLink Manager"
@@ -543,6 +572,38 @@ Install_App_List() {
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
     	else
+        echo "--No $name--"
+    fi
+    
+    #### iterm2 #####
+    name="iTerm"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -is https://iterm2.com/downloads/stable/latest | grep location: | grep -o "iTerm2.*zip" | cut -d "-" -f 2 | cut -d '.' -f1 | sed 's/_/./g')
+        echo "$appNewVersion"
+        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion "
+                if [[ $appversion != $appNewVersion ]]; then
+                    if [[ "$appversion" > "$appNewVersion" ]]; then
+                      echo "$name is on a higher version then reported: $appversion"
+                      else    
+                    echo "$name Needs to be updated"   
+                    appsdisplay+=("$name")
+                    ## Installomator variable ##
+                    install_apps+=("iterm2")
+                    app_icon+=("$applist")
+                    fi
+                else
+                    echo "$name is on the latest version $appNewVersion"
+                fi
+        else
         echo "--No $name--"
     fi
 
@@ -1018,7 +1079,37 @@ echo "$name is on a higher version then reported: $appversion"
     # 	else
     #     echo "--No $name--"
     # fi
-    
+
+    ##### Poly Lens #####
+    name="Poly Lens"
+    applist="/Applications/$name.app"
+    echo "
+        *** Checking for $name ***
+        App File Path: $applist"
+    if [ -d "$applist" ]; then
+        echo "--$name Exists--"
+        echo "Checking latest Version"
+        appNewVersion=$(curl -fs "https://info.lens.poly.com/lens-dt-rn/atom.xml" | grep "Version" | head -1 | cut -d "[" -f3 | sed 's/Version //g' | sed 's/]]\>\<\/title\>//g')        echo "$name Latest Version: $appNewVersion"
+            ## Getting Current Version ##
+                getAppVersion
+                echo "Mac has $name version $appversion"
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                    echo "$name is on a higher version then reported: $appversion"
+                	  else
+            	    echo "$name Needs to be updated"   
+        			appsdisplay+=("$name")
+        			## Installomator variable ##
+        			install_apps+=("polylens")
+                    app_icon+=("$applist")
+                    fi
+        	    else
+        	        echo "$name is on the latest version $appNewVersion"
+        	    fi
+    	else
+        echo "--No $name--"
+    fi 
+
     ##### Rectangle #####
     name="Rectangle"
     applist="/Applications/$name.app"
