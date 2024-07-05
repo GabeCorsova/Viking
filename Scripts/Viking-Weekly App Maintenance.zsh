@@ -16,6 +16,7 @@ On Installomator:
 - Brave Browser
 - FileZilla
 - Citrix Workspace
+- CyberDuck
 - Displaylink
 - Google Chrome
 - Microsoft Office 2019/365 applications: Excel, Powerpoint, Word
@@ -25,6 +26,7 @@ On Installomator:
 - Microsoft Edge
 - Mozilla Firefox
 - Postman
+- poly Lens
 - Rectangle
 - RingCentral Softphone
 - Royal TSX
@@ -115,7 +117,14 @@ xpath() {
 		/usr/bin/xpath $@
 	fi
 }
-
+# Function to pad version numbers
+pad_version() {
+    # Split the version string into its components
+    IFS='.' read -r -A version_parts <<< "$1"
+    # Pad each part with zeros to ensure it has at least three digits
+    printf "%03d%03d%03d\n" "${version_parts[1]}" "${version_parts[2]}" "${version_parts[3]}"
+    IFS=,
+}
 
 versionFromGit() {
     # credit: Søren Theilgaard (@theilgaard)
@@ -173,9 +182,11 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
                 	  echo "$name is on a higher version then reported: $appversion"
                 	  else  
             	    echo "$name Needs to be updated"   
@@ -210,7 +221,10 @@ Install_App_List() {
     #         ## Getting Current Version ##
     #             getAppVersion
     #             echo "Mac has $name version $appversion "
-    #             if [[ $appversion != $appNewVersion ]]; then   
+    #             if [[ $appversion != $appNewVersion ]]; then
+    #            	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+    #            	  echo "$name is on a higher version then reported: $appversion"
+    #            	  else    
     #         	    echo "$name Needs to be updated"   
     #     			appsdisplay+=("$name")
     #     			## Installomator variable ##
@@ -236,13 +250,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("adobereaderdc")
                     app_icon+=("$applist/$icon_most_path/ACR_App.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -263,13 +283,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("adobereaderdc")
                     app_icon+=("$applist/$icon_most_path/ACR_App.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -291,14 +317,20 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("amazonchime")
                     app_icon+=("$applist")
-        	    else
+        	    fi
+                else
         	        echo "Amazon $name is on the latest version $appNewVersion"
         	    fi
     	else
@@ -343,7 +375,7 @@ Install_App_List() {
         versionKey="CitrixVersionString"
         echo "--$name Exists--"
         echo "Checking latest Version"
-        parseURL() {
+      parseURL() {
         urlToParse='https://www.citrix.com/downloads/workspace-app/mac/workspace-app-for-mac-latest.html#ctx-dl-eula-external'
         htmlDocument=$(curl -s -L $urlToParse)
         xmllint --html --xpath "string(//a[contains(@rel, 'downloads.citrix.com')]/@rel)" 2> /dev/null <(print $htmlDocument)
@@ -358,9 +390,11 @@ Install_App_List() {
     echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
                 	  echo "$name is on a higher version then reported: $appversion"
                 	  else  
             	    echo "$name Needs to be updated"   
@@ -378,35 +412,38 @@ Install_App_List() {
     fi
 
     ##### Display Link Manager #####
-    name="DisplayLink Manager"
-    applist="/Applications/$name.app"
-    echo "
-        *** Checking for $name ***
-        App File Path: $applist"
-    if [ -d "$applist" ]; then
-        echo "--$name Exists--"
-        echo "Checking latest Version"
-        appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep "Release:" | head -n 1 | cut -d ' ' -f2)
-        echo "$name Latest Version: $appNewVersion"
-            ## Getting Current Version ##
-                getAppVersion
-                echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
-                	  else  
-            	    echo "$name Needs to be updated"   
-        			appsdisplay+=("$name")
-        			## Installomator variable ##
-        			install_apps+=("displaylinkmanager")
-                    app_icon+=("$applist/$icon_most_path/Icon.icns")
-                    fi
-        	    else
-        	        echo "$name is on the latest version $appNewVersion"
-        	    fi
-    	else
-        echo "--No $name--"
-    fi
+    ## Display link in Installomator is broken using Jamf Apps
+    # name="DisplayLink Manager"
+    # applist="/Applications/$name.app"
+    # echo "
+    #     *** Checking for $name ***
+    #     App File Path: $applist"
+    # if [ -d "$applist" ]; then
+    #     echo "--$name Exists--"
+    #     echo "Checking latest Version"
+    #     appNewVersion=$(curl -sfL https://www.synaptics.com/products/displaylink-graphics/downloads/macos | grep "Release:" | head -n 1 | cut -d ' ' -f2)
+    #     echo "$name Latest Version: $appNewVersion"
+    #         ## Getting Current Version ##
+    #             getAppVersion
+    #             appversion_padded=$(pad_version "$appversion")
+    #             appNewVersion_padded=$(pad_version "$appNewVersion")
+    #             echo "Mac has $name version $appversion "
+    #             if [[ $appversion != $appNewVersion ]]; then
+    #             	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+    #             	  echo "$name is on a higher version then reported: $appversion"
+    #             	  else  
+    #         	    echo "$name Needs to be updated"   
+    #     			appsdisplay+=("$name")
+    #     			## Installomator variable ##
+    #     			install_apps+=("displaylinkmanager")
+    #                 app_icon+=("$applist/$icon_most_path/Icon.icns")
+    #                 fi
+    #     	    else
+    #     	        echo "$name is on the latest version $appNewVersion"
+    #     	    fi
+    # 	else
+    #     echo "--No $name--"
+    # fi
 
     ##### Amazon Workspaces #####
     name="Workspaces"
@@ -421,20 +458,26 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("Amazon $name")
         			## Installomator variable ##
         			install_apps+=("amazonworkspaces")
                     app_icon+=("$applist/$icon_most_path/AppIcon.icns")
+                fi
         	    else
         	        echo "Amazon $name is on the latest version $appNewVersion"
         	    fi
     	else
         echo "--No Amazon $name--"
     fi
-     ##### Brave Browser #####
+       ##### Brave Browser #####
     name="Brave Browser"
     applist="/Applications/$name.app"
     echo "
@@ -480,17 +523,22 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-        appNewVersion=$(curl -fs "https://chromiumdash.appspot.com/fetch_releases?channel=stable&platform=mac&num=1&offset=0" | grep -o '"version":"[0-9.]*"' | head -1 | sed -E 's/"version":"([0-9.]+)"/\1/')
+        appNewVersion=$(getJSONValue "$(curl -fsL "https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions/all/releases?filter=fraction>0.01,endtime=none&order_by=version%20desc" )" "releases[0].version" )
+        echo "$appNewVersion"
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion" > "$appNewVersion" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
-        			install_apps+=("googlechrome")
+        			install_apps+=("googlechromepkg")
                     app_icon+=("$applist/$icon_most_path/app.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -507,21 +555,29 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--$name Exists--"
         echo "Checking latest Version"
-        appNewVersion=$(curl -fs https://www.sublimetext.com/download | grep -i -A 4 "id.*changelog" | grep -io "Build [0-9]*")
+        versionKey="CFBundleVersion"
+        appNewVersion=$(curl -fs https://www.sublimetext.com/download | grep -i -A 4 "id.*changelog" | grep -io "Build [0-9]*" | awk '{print $2}')
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("sublimetext")
                     app_icon+=("$applist/$icon_most_path/Sublime Text.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
-    	else
+    	versionKey="CFBundleShortVersionString"
+        else
         echo "--No $name--"
     fi
 
@@ -539,13 +595,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("viscosity")
                     app_icon+=("$applist/$icon_most_path/Viscosity.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -567,17 +629,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
                 	  echo "$name is on a higher version then reported: $appversion"
-                	  else
+                	  else 
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftautoupdate")
                         app_icon+=("$applist/$icon_most_path/AppIcon.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -627,17 +691,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftexcel")
                         app_icon+=("$applist/$icon_most_path/XCEL.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -659,17 +725,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftpowerpoint")
                         app_icon+=("$applist/$icon_most_path/PPT3.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -692,17 +760,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftword")
                         app_icon+=("$applist/$icon_most_path/MSWD.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -724,17 +794,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftoutlook")
                         app_icon+=("$applist")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -756,17 +828,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftonenote")
                         app_icon+=("$applist/$icon_most_path/OneNote.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -791,17 +865,19 @@ Install_App_List() {
             ## Getting Current Version ##
             
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("microsoftteams")
                         app_icon+=("$applist/$icon_most_path/icon.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -825,17 +901,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                	if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+echo "$name is on a higher version then reported: $appversion"
                 	  else
             	    	echo "$name Needs to be updated"   
         				appsdisplay+=("$name")
         				## Installomator variable ##
         				install_apps+=("visualstudiocode")
                         app_icon+=("$applist/$icon_most_path/Code.icns")
-        				fi
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -857,13 +935,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("firefox")
                     app_icon+=("$applist/$icon_most_path/firefox.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -880,15 +964,15 @@ Install_App_List() {
     if [ -d "$applist" ]; then
         echo "--FileZilla Exists--"
         echo "Checking latest Version"
-        appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos | head -n 1 | awk -F '_' '{print $2}' )
+        appNewVersion=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macosx | head -n 1 | awk -F '_' '{print $2}' )
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
                 echo "Mac has $name version $appversion "
                 if [[ $appversion != $appNewVersion ]]; then
-                    if [[ "$appversion" > "$appNewVersion" ]]; then
-                	  echo "$name is on a higher version then reported: $appversion"
-                	  else
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                    echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
@@ -949,12 +1033,16 @@ Install_App_List() {
             ## Getting Current Version ##
                 getAppVersion
                 echo "Mac has $name version $appversion"
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                    echo "$name is on a higher version then reported: $appversion"
+                	  else
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("rectangle")
                     app_icon+=("$applist")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1003,13 +1091,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("ringcentralphone")
                     app_icon+=("$applist/$icon_most_path/app.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1031,12 +1125,16 @@ Install_App_List() {
             ## Getting Current Version ##
                 getAppVersion
                 echo "Mac has $name version $appversion"
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("royaltsx")
                     app_icon+=("$applist")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1058,13 +1156,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("slack")
                     app_icon+=("$applist/$icon_most_path/electron.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1119,13 +1223,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("vlc")
                     app_icon+=("$applist/$icon_most_path/VLC.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1150,8 +1260,13 @@ Install_App_List() {
     #     echo "$name Latest Version: $appNewVersion"
     #         ## Getting Current Version ##
     #             getAppVersion
+    #             appversion_padded=$(pad_version "$appversion")
+    #             appNewVersion_padded=$(pad_version "$appNewVersion")
     #             echo "Mac has $name version $appversion "
-    #             if [[ $appversion != $appNewVersion ]]; then   
+    #             if [[ $appversion != $appNewVersion ]]; then
+    #            	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+    #           	  echo "$name is on a higher version then reported: $appversion"
+    #           	  else    
     #         	    echo "$name Needs to be updated"   
     #     			appsdisplay+=("$name")
     #     			## Installomator variable ##
@@ -1178,13 +1293,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("TextExpander")
                     app_icon+=("$applist/$icon_most_path/SMTEIcon.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1207,13 +1328,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("talkdeskcallbar")
                     app_icon+=("$applist/$icon_most_path/Callbar.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1271,11 +1398,11 @@ Install_App_List() {
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
-    	else
+        else
         echo "--No $name--"
     fi
-    
-    ##### talkdeskcxcloud #####
+
+     ##### talkdeskcxcloud #####
     name="Talkdesk"
     applist="/Applications/$name.app"
     echo "
@@ -1290,13 +1417,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("talkdeskcxcloud")
                     app_icon+=("$applist/$icon_most_path/icon.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1317,13 +1450,19 @@ Install_App_List() {
         echo "$name Latest Version: $appNewVersion"
             ## Getting Current Version ##
                 getAppVersion
+                appversion_padded=$(pad_version "$appversion")
+                appNewVersion_padded=$(pad_version "$appNewVersion")
                 echo "Mac has $name version $appversion "
-                if [[ $appversion != $appNewVersion ]]; then   
+                if [[ $appversion != $appNewVersion ]]; then
+                	if [[ "$appversion_padded" > "$appNewVersion_padded" ]]; then
+                	  echo "$name is on a higher version then reported: $appversion"
+                	  else    
             	    echo "$name Needs to be updated"   
         			appsdisplay+=("$name")
         			## Installomator variable ##
         			install_apps+=("wireshark")
                     app_icon+=("$applist/$icon_most_path/Wireshark.icns")
+                    fi
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
@@ -1361,7 +1500,6 @@ Install_App_List() {
         	    else
         	        echo "$name is on the latest version $appNewVersion"
         	    fi
-    	versionKey="CFBundleShortVersionString"
         else
         echo "--No $name--"
     fi
@@ -1406,7 +1544,7 @@ Deferal_Count_Logic() {
         <key>deferralCount</key>
         <integer>0</integer>
     </dict>
-    </plist>" > "$plist_path"
+    </plist>" > "$Deferals_Count_PLIST"
     fi
     # Read the current deferral count from the plist
     deferral_count=$(defaults read "$Deferals_Count_PLIST" deferralCount)
@@ -1574,7 +1712,7 @@ Deferal_Logic() {
     echo "time will be $time secs"
     else
     echo "error Client either exited or closed will put default 30 mins"
-     time="1800"
+    time="1800"
     echo "time will be $time secs"
     fi
         if [ -f $Deferal_PLIST ]; then
@@ -1653,17 +1791,31 @@ Notifer_DisplayApps=$(
     done
     )
 
-list=$(for apps in $(echo $Notifer_DisplayApps)
-    do
-    echo "$apps"
-    done | wc -l | sed -e 's/^[ \t]*//')
-    echo "this has $list updates"
+list=${#appsdisplay[@]}
+
+    echo "
+    *****************************
+    The Mac has $list updates
+    *****************************
+    "
         if [ ${list} = '0' ]; then
-        echo "No Updates needed will exit"
+        echo "
+        *****************************
+        No Updates needed will exit
+        *****************************
+        "
         exit 0
         else 
-        echo "Found $list Updates needed will continue \n ***********************************************
-        "
+echo "
+***********************************
+The following app(s) needs to be updated:
+"
+for app in "${appsdisplay[@]}"; do
+echo "* $app"
+done
+echo "
+***********************************
+"
         fi
 
 ## Prompt User ##
@@ -1718,24 +1870,65 @@ if [ $Choice = "0" ]; then
             sleep 0.1
             ## Customize Installomator or other ways to install instead
             if [[ "$Installomator" == "microsoftteams" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftoutlook" ]]; then
+                echo "
+                    *** Installing $Installomator ***
+                    "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftedge" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftonenote" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftword" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftpowerpoint" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "microsoftexcel" ]]; then
-                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"                
+                echo "
+                *** Installing $Installomator ***
+                "
+                    $InstallomatorApp $Installomator INSTALL="force" DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             elif [[ "$Installomator" == "BetterZip" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     "$JAMF_BINARY" policy -event BetterZipUpdates
             elif [[ "$Installomator" == "1password8" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
                     $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=kill LOGO="$LOGO"
+            elif [[ "$Installomator" == "filezilla" ]]; then
+                echo "
+                *** Installing $Installomator ***
+                "
+                if [[ $(arch) == "arm64" ]]; then
+                    cpu_arch="arm64"
+                elif [[ $(arch) == "i386" ]]; then
+                    cpu_arch="x86"
+                fi
+                downloadURL=$( curl -fsL https://filezilla-project.org/download.php\?show_all=1 | grep macos-$cpu_arch | head -n 1 | awk -F '"' '{print $2}' )
+                    $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=kill LOGO="$LOGO" 
             else
+                echo "
+                *** Installing $Installomator ***
+                "
                 $InstallomatorApp $Installomator DIALOG_CMD_FILE=$dialog_command_file BLOCKING_PROCESS_ACTION=tell_user_then_kill PROMPT_TIMEOUT=300 LOGO="$LOGO"
             fi
             percentage=$(($percentage + $progressincreament))
